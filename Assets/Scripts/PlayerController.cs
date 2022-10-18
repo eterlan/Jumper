@@ -23,7 +23,6 @@ public class PlayerController : MonoBehaviour
         m_rb2d                          = GetComponent<Rigidbody2D>();
         m_collider2D                    = GetComponent<BoxCollider2D>();
         m_groundLayer                   = LayerMask.NameToLayer("Ground");
-        m_rb2d.useFullKinematicContacts = true;
         filter2D                        = new ContactFilter2D { layerMask = m_groundLayer };
     }
 
