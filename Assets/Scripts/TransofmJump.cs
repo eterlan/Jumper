@@ -1,7 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
+
+[RequireComponent(typeof(GroundCheckWithSnapping))]
 public class TransformJump : MonoBehaviour
 {
     public GroundCheckWithSnapping groundCheck;
@@ -21,17 +21,24 @@ public class TransformJump : MonoBehaviour
     private float playerHeight;
     private int   jumpCount;
 
+    private Animator animator;
+    private int      animOnGroundHash;
+    private int      animJumpHash;
+    
     void Update()
     {
         yVelocity += gravity * gravityScale * Time.deltaTime;
+        animator.SetBool(animOnGroundHash, groundCheck.isGrounded);
         if (groundCheck.isGrounded && yVelocity < 0)
         {
             jumpCount          = 0;
             yVelocity           = 0;
             transform.position = new Vector3(transform.position.x, groundCheck.surfacePosition.y + playerHeight, transform.position.z);
         }
-        
-        if (Input.GetKeyDown(KeyCode.Space) && jumpCount < 2) 
+
+        var jump = Input.GetKeyDown(KeyCode.Space) && jumpCount < 2; 
+        animator.SetBool(animJumpHash, jump);
+        if (jump) 
         {
             jumpCount ++;
             yVelocity     = jumpForceY;
@@ -47,7 +54,10 @@ public class TransformJump : MonoBehaviour
 
     private void Awake()
     {
-        groundCheck  = GetComponent<GroundCheckWithSnapping>();
-        playerHeight = transform.GetComponent<BoxCollider2D>().size.y / 2;
+        groundCheck      = GetComponent<GroundCheckWithSnapping>();
+        playerHeight     = transform.GetComponent<BoxCollider2D>().size.y / 2;
+        animator         = GetComponentInChildren<Animator>();
+        animOnGroundHash = Animator.StringToHash("OnGround");
+        animJumpHash     = Animator.StringToHash("Jump");
     }
 }
