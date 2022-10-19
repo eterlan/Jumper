@@ -140,7 +140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &47273795
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -349,7 +349,7 @@ MonoBehaviour:
   jumpForceY: 20
   jumpForceX: 1500
   gravity: -9.81
-  gravityScale: 5
+  gravityScale: 1
   xSpeed: 500
   xSpeedLerpSpeed: 0.1
   yVelocity: 0
