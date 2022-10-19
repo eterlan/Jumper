@@ -27,7 +27,7 @@ public class TransformJump : MonoBehaviour
     
     void Update()
     {
-        yVelocity += gravity * gravityScale * Time.deltaTime;
+        yVelocity += gravity * gravityScale * Time.deltaTime; 
         animator.SetBool(animOnGroundHash, groundCheck.isGrounded);
         if (groundCheck.isGrounded && yVelocity < 0)
         {
@@ -35,7 +35,7 @@ public class TransformJump : MonoBehaviour
             yVelocity           = 0;
             transform.position = new Vector3(transform.position.x, groundCheck.surfacePosition.y + playerHeight, transform.position.z);
         }
-
+        
         var jump = Input.GetKeyDown(KeyCode.Space) && jumpCount < 2; 
         animator.SetBool(animJumpHash, jump);
         if (jump) 
@@ -44,12 +44,15 @@ public class TransformJump : MonoBehaviour
             yVelocity     = jumpForceY;
             xRuntimeSpeed = jumpForceX;
         }
-
+        
         xRuntimeSpeed = Mathf.Lerp(xRuntimeSpeed, xSpeed, xSpeedLerpSpeed);
         var horizontalInput    = Input.GetAxis("Horizontal");
         var horizontalMovement = horizontalInput * xRuntimeSpeed * Time.deltaTime;
-
+        
         transform.Translate(new Vector3(horizontalMovement, yVelocity, 0) * Time.deltaTime);
+        // var prevPos       = transform.position;
+        // var timeSinceLoad = Time.timeSinceLevelLoad;
+        // transform.position = new Vector3(prevPos.x, 0.5f * gravity * timeSinceLoad * timeSinceLoad, prevPos.z); 
     }
 
     private void Awake()
