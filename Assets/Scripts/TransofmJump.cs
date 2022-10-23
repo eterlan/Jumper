@@ -1,15 +1,24 @@
 
 using UnityEngine;
+using UnityEngine.Serialization;
 
+public enum FaceDirection
+{
+    Left,
+    Right
+}
 [RequireComponent(typeof(GroundCheckWithSnapping))]
 public class TransformJump : MonoBehaviour
 {
-    public GroundCheckWithSnapping groundCheck;
-    public float                   jumpForceY      =20;
-    public float                   jumpForceX      =20;
-    public float                   gravity         = -9.81f;
-    public float                   gravityScale    = 5;
-    public float                   xSpeed          = 5;
+    public  FaceDirection           faceDirection;
+    private bool                    lockFaceDirection;
+    public  GroundCheckWithSnapping groundCheck;
+    public  float                   jumpForceY   =20;
+    public  float                   jumpForceX   =20;
+    public  float                   gravity      = -9.81f;
+    public  float                   gravityScale = 5;
+    [FormerlySerializedAs("xSpeed")]
+    public float                   originXSpeed          = 5;
     public float                   xSpeedLerpSpeed = 0.2f;
     
     [SerializeField]
@@ -19,20 +28,45 @@ public class TransformJump : MonoBehaviour
     private float xRuntimeSpeed;
     
     private float playerHeight;
-    private int   jumpCount;
+    private int   jumpCount = 2;
+    private int   dashCount = 2;
 
     private Animator animator;
     private int      animOnGroundHash;
     private int      animJumpHash;
+    private int      animDashHash;
+
+    public  bool           lerpDash;
+    public  float          dashLerp;
+    public  AnimationCurve dashCurve;
+    public  float          dashMaxSpeed;
+    public  float          dashDuration;
+    private float          dashTimeRemain;
+    
+    
     
     void Update()
     {
+        if (!)
+        {
+            
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            faceDirection = FaceDirection.Left;
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            faceDirection = FaceDirection.Right;
+        }
         yVelocity += gravity * gravityScale * Time.deltaTime; 
         animator.SetBool(animOnGroundHash, groundCheck.isGrounded);
         if (groundCheck.isGrounded && yVelocity < 0)
         {
             jumpCount          = 0;
-            yVelocity           = 0;
+            dashCount          = 0;
+            yVelocity          = 0;
             transform.position = new Vector3(transform.position.x, groundCheck.surfacePosition.y + playerHeight, transform.position.z);
         }
         
@@ -40,14 +74,46 @@ public class TransformJump : MonoBehaviour
         animator.SetBool(animJumpHash, jump);
         if (jump) 
         {
-            jumpCount ++;
+            jumpCount++;
             yVelocity     = jumpForceY;
             xRuntimeSpeed = jumpForceX;
         }
         
-        xRuntimeSpeed = Mathf.Lerp(xRuntimeSpeed, xSpeed, xSpeedLerpSpeed);
+        xRuntimeSpeed = Mathf.Lerp(xRuntimeSpeed, originXSpeed, xSpeedLerpSpeed);
         var horizontalInput    = Input.GetAxis("Horizontal");
-        var horizontalMovement = horizontalInput * xRuntimeSpeed * Time.deltaTime;
+        var horizontalMovement = horizontalInput * xRuntimeSpeed;
+
+        var dash = Input.GetMouseButtonDown(1) && dashCount < 2; 
+        animator.SetBool(animDashHash, dash);
+        if (dash)
+        {
+            dashCount++;
+            dashTimeRemain = dashDuration;
+            xRuntimeSpeed  = dashMaxSpeed;
+        }
+        
+        var isDashing = dashTimeRemain > 0;
+        lockFaceDirection = isDashing;
+        if (isDashing)
+        {
+            dashTimeRemain -= Time.deltaTime;
+            yVelocity      =  0;
+            
+            if (lerpDash)
+            {
+                xRuntimeSpeed = Mathf.Lerp(xRuntimeSpeed, originXSpeed, dashLerp);
+            }
+            else
+            {
+                var normalizedTime = 1 - dashTimeRemain / dashDuration;
+                var sampleResult   = dashCurve.Evaluate(normalizedTime);
+                xRuntimeSpeed = Mathf.Lerp(dashMaxSpeed, originXSpeed, sampleResult);
+            }
+
+            horizontalMovement = (faceDirection == FaceDirection.Right ? 1 : -1) * xRuntimeSpeed; 
+        }
+
+
         
         transform.Translate(new Vector3(horizontalMovement, yVelocity, 0) * Time.deltaTime);
         // var prevPos       = transform.position;
@@ -62,5 +128,6 @@ public class TransformJump : MonoBehaviour
         animator         = GetComponentInChildren<Animator>();
         animOnGroundHash = Animator.StringToHash("OnGround");
         animJumpHash     = Animator.StringToHash("Jump");
+        animDashHash     = Animator.StringToHash("Dash");
     }
 }
