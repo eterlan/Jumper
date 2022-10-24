@@ -13,8 +13,9 @@ public class TransformJump : MonoBehaviour
     public  FaceDirection           faceDirection;
     private bool                    lockFaceDirection;
     public  GroundCheckWithSnapping groundCheck;
-    public  float                   jumpForceY   =20;
-    public  float                   jumpForceX   =20;
+    public  float                   jumpForceY   = 20;
+    public  float                   dropForce    = 20;
+    public  float                   jumpForceX   = 20;
     public  float                   gravity      = -9.81f;
     public  float                   gravityScale = 5;
     [FormerlySerializedAs("xSpeed")]
@@ -47,19 +48,27 @@ public class TransformJump : MonoBehaviour
     
     void Update()
     {
-        if (!)
-        {
-            
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            faceDirection = FaceDirection.Left;
-        }
+        var horizontalInput = Input.GetAxis("Horizontal");
 
-        if (Input.GetKeyDown(KeyCode.D))
+        
+        if (!lockFaceDirection)
         {
-            faceDirection = FaceDirection.Right;
+            if (horizontalInput != 0)
+            {
+                faceDirection = horizontalInput > 0 ? FaceDirection.Right : FaceDirection.Left;
+            }
+
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                faceDirection = FaceDirection.Left;
+            }
+
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                faceDirection = FaceDirection.Right;
+            }    
         }
+        
         yVelocity += gravity * gravityScale * Time.deltaTime; 
         animator.SetBool(animOnGroundHash, groundCheck.isGrounded);
         if (groundCheck.isGrounded && yVelocity < 0)
@@ -78,9 +87,15 @@ public class TransformJump : MonoBehaviour
             yVelocity     = jumpForceY;
             xRuntimeSpeed = jumpForceX;
         }
+
+        var drop = Input.GetMouseButtonDown(0) && !groundCheck.isGrounded; 
+        if (drop)
+        {
+            yVelocity = -dropForce; 
+        }
         
         xRuntimeSpeed = Mathf.Lerp(xRuntimeSpeed, originXSpeed, xSpeedLerpSpeed);
-        var horizontalInput    = Input.GetAxis("Horizontal");
+        Debug.Log(horizontalInput);
         var horizontalMovement = horizontalInput * xRuntimeSpeed;
 
         var dash = Input.GetMouseButtonDown(1) && dashCount < 2; 
