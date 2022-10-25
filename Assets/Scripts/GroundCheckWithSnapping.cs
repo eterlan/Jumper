@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
+
+[SaveDuringPlay]
 public class GroundCheckWithSnapping : MonoBehaviour
 {
     public bool           isGrounded;
