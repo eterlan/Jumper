@@ -1,4 +1,5 @@
 
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -7,7 +8,8 @@ public enum FaceDirection
     Left,
     Right
 }
-[RequireComponent(typeof(GroundCheckWithSnapping))]
+
+[SaveDuringPlay]
 public class TransformJump : MonoBehaviour
 {
     public  FaceDirection           faceDirection;
@@ -27,10 +29,11 @@ public class TransformJump : MonoBehaviour
 
     [SerializeField]
     private float xRuntimeSpeed;
-    
-    private float playerHeight;
-    private int   jumpCount = 2;
-    private int   dashCount = 2;
+
+    public  BoxCollider2D bodyCollider;
+    private float         playerHeight;
+    private int           jumpCount = 2;
+    private int           dashCount = 2;
 
     private Animator animator;
     private int      animOnGroundHash;
@@ -138,8 +141,8 @@ public class TransformJump : MonoBehaviour
 
     private void Awake()
     {
-        groundCheck      = GetComponent<GroundCheckWithSnapping>();
-        playerHeight     = transform.GetComponent<BoxCollider2D>().size.y / 2;
+        groundCheck      = GetComponentInChildren<GroundCheckWithSnapping>();
+        if (bodyCollider != null) playerHeight = bodyCollider.size.y / 2;
         animator         = GetComponentInChildren<Animator>();
         animOnGroundHash = Animator.StringToHash("OnGround");
         animJumpHash     = Animator.StringToHash("Jump");
