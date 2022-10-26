@@ -46,7 +46,9 @@ public class TransformJump : MonoBehaviour
     public  float          dashMaxSpeed;
     public  float          dashDuration;
     private float          dashTimeRemain;
-    
+
+    private int m_groundLayer;
+    private int m_obstacleLayer;
     
     
     void Update()
@@ -147,5 +149,25 @@ public class TransformJump : MonoBehaviour
         animOnGroundHash = Animator.StringToHash("OnGround");
         animJumpHash     = Animator.StringToHash("Jump");
         animDashHash     = Animator.StringToHash("Dash");
+        m_groundLayer    = LayerMask.NameToLayer("Ground");
+        m_obstacleLayer  = LayerMask.NameToLayer("Obstacle");
+    }
+
+    private bool CanMove(Vector2 checkCenter, Vector2 size)
+    {
+        var filterLayer = 1 << m_groundLayer | 1 << m_obstacleLayer;
+        var col = Physics2D.OverlapBox(checkCenter, size, 0, filterLayer);
+        if (col == null)
+        {
+            return true;
+        }
+
+        var colLayer = col.gameObject.layer;
+        if (colLayer == m_groundLayer)
+        {
+            return yVelocity > 0;
+        }
+
+        return false;
     }
 }

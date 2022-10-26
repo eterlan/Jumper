@@ -345,7 +345,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isGrounded: 1
   offset: 0.51
-  surfacePosition: {x: 11.79446, y: 1.71}
+  surfacePosition: {x: -15.65759, y: -3.87}
   surfaceSize: {x: 0.1, y: 0.1}
 --- !u!1 &118086033
 GameObject:
@@ -392,7 +392,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54cff393f95e471691adb9f17a6cee45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  faceDirection: 1
+  faceDirection: 0
   groundCheck: {fileID: 103411922}
   jumpForceY: 20
   dropForce: 25
