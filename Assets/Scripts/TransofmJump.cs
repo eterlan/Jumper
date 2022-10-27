@@ -1,4 +1,5 @@
 
+using System;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -133,9 +134,11 @@ public class TransformJump : MonoBehaviour
             horizontalMovement = (faceDirection == FaceDirection.Right ? 1 : -1) * xRuntimeSpeed; 
         }
 
-
-        
-        transform.Translate(new Vector3(horizontalMovement, yVelocity, 0) * Time.deltaTime);
+        var moveTarget = new Vector2(horizontalMovement, yVelocity) * Time.deltaTime;
+        if (CanMove(moveTarget + (Vector2)transform.position, bodyCollider.size))
+        {
+            transform.Translate(moveTarget);
+        }
         // var prevPos       = transform.position;
         // var timeSinceLoad = Time.timeSinceLevelLoad;
         // transform.position = new Vector3(prevPos.x, 0.5f * gravity * timeSinceLoad * timeSinceLoad, prevPos.z); 
@@ -169,5 +172,10 @@ public class TransformJump : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        
     }
 }
