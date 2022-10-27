@@ -1,4 +1,5 @@
 
+using System;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -31,7 +32,7 @@ public class TransformJump : MonoBehaviour
     private float xRuntimeSpeed;
 
     public  BoxCollider2D bodyCollider;
-    private float         playerHeight;
+    public float         playerHeight;
     private int           jumpCount = 2;
     private int           dashCount = 2;
 
@@ -47,10 +48,10 @@ public class TransformJump : MonoBehaviour
     public  float          dashDuration;
     private float          dashTimeRemain;
 
-    private int m_groundLayer;
-    private int m_obstacleLayer;
-    
-    
+    private int     m_groundLayer;
+    private int     m_obstacleLayer;
+    private Vector2 tryMoveDelta;
+
     void Update()
     {
         var horizontalInput = Input.GetAxis("Horizontal");
@@ -134,8 +135,11 @@ public class TransformJump : MonoBehaviour
         }
 
 
-        
-        transform.Translate(new Vector3(horizontalMovement, yVelocity, 0) * Time.deltaTime);
+        tryMoveDelta = new Vector2(horizontalMovement, yVelocity) * Time.deltaTime;
+        if (CanMove(tryMoveDelta + (Vector2)transform.position, bodyCollider.size))
+        {
+            transform.Translate(tryMoveDelta);
+        }
         // var prevPos       = transform.position;
         // var timeSinceLoad = Time.timeSinceLevelLoad;
         // transform.position = new Vector3(prevPos.x, 0.5f * gravity * timeSinceLoad * timeSinceLoad, prevPos.z); 
@@ -144,7 +148,7 @@ public class TransformJump : MonoBehaviour
     private void Awake()
     {
         groundCheck      = GetComponentInChildren<GroundCheckWithSnapping>();
-        if (bodyCollider != null) playerHeight = bodyCollider.size.y / 2;
+        playerHeight = bodyCollider.size.y / 2;
         animator         = GetComponentInChildren<Animator>();
         animOnGroundHash = Animator.StringToHash("OnGround");
         animJumpHash     = Animator.StringToHash("Jump");
@@ -169,5 +173,10 @@ public class TransformJump : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube(tryMoveDelta + (Vector2)transform.position, bodyCollider.size);
     }
 }
