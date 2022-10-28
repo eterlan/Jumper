@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FSM;
 using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     public  float     gravity = -3;
-    private IFsmState m_currentState;
+    private FsmState m_currentState;
 
     private Rigidbody2D     m_rb2d;
     private BoxCollider2D   m_collider2D;

@@ -79,9 +79,7 @@ public class TransformJump : MonoBehaviour
         animator.SetBool(animOnGroundHash, groundCheck.isGrounded);
         if (groundCheck.isGrounded && yVelocity < 0)
         {
-            jumpCount          = 0;
-            dashCount          = 0;
-            yVelocity          = 0;
+            Reset();
             transform.position = new Vector3(transform.position.x, groundCheck.surfacePosition.y + playerHeight, transform.position.z);
         }
         
@@ -136,19 +134,37 @@ public class TransformJump : MonoBehaviour
 
 
         tryMoveDelta = new Vector2(horizontalMovement, yVelocity) * Time.deltaTime;
-        if (CanMove(tryMoveDelta + (Vector2)transform.position, bodyCollider.size))
+        if (!CanMove(tryMoveDelta + (Vector2)transform.position, bodyCollider.size, out var col))
         {
-            transform.Translate(tryMoveDelta);
+            var closestPos = Physics2D.ClosestPoint(transform.position, col);
+            var dist       = closestPos - (Vector2)transform.position;
+            if (Mathf.Abs(dist.x) > Mathf.Abs(dist.y))
+            {
+                tryMoveDelta.x = 0;
+            }
+            else
+            {
+                tryMoveDelta.y = 0;
+                yVelocity      = 0;
+            }
         }
+        transform.Translate(tryMoveDelta);
+
         // var prevPos       = transform.position;
         // var timeSinceLoad = Time.timeSinceLevelLoad;
         // transform.position = new Vector3(prevPos.x, 0.5f * gravity * timeSinceLoad * timeSinceLoad, prevPos.z); 
+        void Reset()
+        {
+            jumpCount = 0;
+            dashCount = 0;
+            yVelocity = 0;
+        }
     }
 
     private void Awake()
     {
         groundCheck      = GetComponentInChildren<GroundCheckWithSnapping>();
-        playerHeight = bodyCollider.size.y / 2;
+        //playerHeight = bodyCollider.size.y / 2;
         animator         = GetComponentInChildren<Animator>();
         animOnGroundHash = Animator.StringToHash("OnGround");
         animJumpHash     = Animator.StringToHash("Jump");
@@ -157,10 +173,10 @@ public class TransformJump : MonoBehaviour
         m_obstacleLayer  = LayerMask.NameToLayer("Obstacle");
     }
 
-    private bool CanMove(Vector2 checkCenter, Vector2 size)
+    private bool CanMove(Vector2 checkCenter, Vector2 size, out Collider2D col)
     {
         var filterLayer = 1 << m_groundLayer | 1 << m_obstacleLayer;
-        var col = Physics2D.OverlapBox(checkCenter, size, 0, filterLayer);
+        col = Physics2D.OverlapBox(checkCenter, size, 0, filterLayer);
         if (col == null)
         {
             return true;
