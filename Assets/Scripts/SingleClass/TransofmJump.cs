@@ -4,12 +4,6 @@ using Cinemachine;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public enum FaceDirection
-{
-    Left,
-    Right
-}
-
 [SaveDuringPlay]
 public class TransformJump : MonoBehaviour
 {
@@ -99,7 +93,6 @@ public class TransformJump : MonoBehaviour
         }
         
         xRuntimeSpeed = Mathf.Lerp(xRuntimeSpeed, originXSpeed, xSpeedLerpSpeed);
-        Debug.Log(horizontalInput);
         var horizontalMovement = horizontalInput * xRuntimeSpeed;
 
         var dash = Input.GetMouseButtonDown(1) && dashCount < 2; 

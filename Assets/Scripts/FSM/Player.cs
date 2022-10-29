@@ -1,68 +1,104 @@
 using System;
+using Cinemachine;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace FSM
 {
-    public class Player : MonoBehaviour
+    [SaveDuringPlay]
+    public class Player : ControllerBase
     {
-        // Collision
-        public  Rigidbody2D     rb2d;
-        public  ContactFilter2D groundFilter;
-
-        // Animator
-        private Animator animator;  
-        private int      animOnGroundHash;
-        private int      animJumpHash;
-        private int      animDashHash;
+        //  Behaviour
+        [Header("行为配置")]
+        public float originXSpeed = 5;
+        public float xSpeedLerpSpeed = 0.1f; 
         
-        // Behaviour
-        public bool    canJump;
-        public int     jumpMaxCount = 2;
-        public int     jumpCount;
-        public Vector2 jumpForce = new(10, 0);
+        public int   jumpMaxCount       = 2;
+        public float jumpCancelVelocity = 5;
+        public float jumpVelocity       = 17;
+        public float minJumpDuration    = 0.1f;
+        public float jumpForceX         = 20;
 
-        public bool canDash;
-        public bool dashCount;
+        public float dropForce = 25;
+        
+        public float          dashLerp = 0.1f;
+        public AnimationCurve dashCurve;
+        public float          dashMaxSpeed = 20;
+        public float          dashDuration = 0.2f;
 
-        private void Awake()
+        [Header("运行时参数")]
+        public int jumpCount;
+        public  bool          canDash;
+        public  int          dashCount;
+        public bool          lockFaceDirection;
+        // [NonSerialized][ShowInInspector]
+        public  float         xRuntimeSpeed;
+        public  FaceDirection faceDirection;
+        
+        public FSMManager fsmManager; //= new FSMManager();
+        
+        // Component
+        public Collider2D groundCheckCollider;
+
+        private void Awake() 
         {
             rb2d         = GetComponent<Rigidbody2D>();
             animator     = GetComponentInChildren<Animator>();
-            groundFilter = new ContactFilter2D {layerMask = LayerMask.GetMask("Ground"), useLayerMask = true};
+            groundFilter = new ContactFilter2D {layerMask = LayerMask.GetMask("Ground"), useLayerMask = true, useTriggers = true};
             
             animOnGroundHash = Animator.StringToHash("OnGround");
-            animJumpHash     = Animator.StringToHash("Jump");
             animDashHash     = Animator.StringToHash("Dash");
+
+            var onGround = new OnGround();
+            fsmManager       = new FSMManager(this, new FsmState[]{onGround, new Jumping(), new Dash(), new Falling()}, onGround);
         }
 
         private void Update()
         {
-            var isGround = rb2d.IsTouching(groundFilter);
+            // isGround = rb2d.IsTouching(groundFilter);
+            isGround = Physics2D.IsTouching(groundCheckCollider, groundFilter);
             animator.SetBool(animOnGroundHash, isGround);
-            if (isGround && rb2d.velocity.y < 0)
+
+            var jumpPressed = Input.GetButtonDown("Jump");
+            if (jumpPressed) fsmManager.SwitchState<Jumping>(repeatEnter: true);
+            var dashPressed = Input.GetMouseButtonDown(1);
+            if (dashPressed) fsmManager.SwitchState<Dash>(repeatEnter: true);
+            
+            fsmManager.Update();
+            
+            var horizontalInput = Input.GetAxis("Horizontal");
+            if (!lockFaceDirection)
             {
-                Reset();
+                Move(horizontalInput);
+                UpdateFaceDirection(horizontalInput);
             }
-
-            Jump();
+            Drop();
         }
 
-        private void Jump()
+        private void Drop()
         {
-            var jumpPressed = Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount;
-            animator.SetBool(animJumpHash, jumpPressed);
-            if (jumpPressed)
+            var drop = Input.GetMouseButtonDown(0) && !isGround; 
+            if (drop)
             {
-                jumpCount++;
-                rb2d.velocity = new Vector2(rb2d.velocity.x, 0);
-                rb2d.AddForce(jumpForce, ForceMode2D.Impulse);
+                rb2d.velocity = new Vector2(rb2d.velocity.x, -dropForce); 
             }
         }
 
-        private void Reset()
+        private void Move(float horizontalInput)
         {
-            jumpCount = 0;
+            xRuntimeSpeed   = Mathf.Lerp(xRuntimeSpeed, originXSpeed, xSpeedLerpSpeed);
+            var xSignedSpeed = xRuntimeSpeed * horizontalInput; 
+            rb2d.velocity = new Vector2(xSignedSpeed, rb2d.velocity.y);
+            // Debug.Log(rb2d.velocity);
         }
+
+        private void UpdateFaceDirection(float horizontalInput)
+        {
+            if (horizontalInput != 0) faceDirection        = horizontalInput > 0 ? FaceDirection.Right : FaceDirection.Left;
+            if (Input.GetKeyDown(KeyCode.A)) faceDirection = FaceDirection.Left;
+            if (Input.GetKeyDown(KeyCode.D)) faceDirection = FaceDirection.Right;
+        }
+
     }
     // TEST 能同时处于 空中, 能移动, 能冲刺, 能下坠
 }
