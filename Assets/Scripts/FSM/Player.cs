@@ -1,6 +1,4 @@
-using System;
 using Cinemachine;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace FSM
@@ -33,7 +31,7 @@ namespace FSM
         public bool          lockFaceDirection;
         // [NonSerialized][ShowInInspector]
         public  float         xRuntimeSpeed;
-        public  FaceDirection faceDirection;
+        public  FaceDirection faceDirection;   
         
         public FSMManager fsmManager; //= new FSMManager();
         
@@ -86,6 +84,7 @@ namespace FSM
 
         private void Move(float horizontalInput)
         {
+            // multiplier
             xRuntimeSpeed   = Mathf.Lerp(xRuntimeSpeed, originXSpeed, xSpeedLerpSpeed);
             var xSignedSpeed = xRuntimeSpeed * horizontalInput; 
             rb2d.velocity = new Vector2(xSignedSpeed, rb2d.velocity.y);
