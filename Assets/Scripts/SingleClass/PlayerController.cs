@@ -1,13 +1,8 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     public  float     gravity = -3;
-    private IFsmState m_currentState;
 
     private Rigidbody2D     m_rb2d;
     private BoxCollider2D   m_collider2D;
@@ -16,7 +11,7 @@ public class PlayerController : MonoBehaviour
     private bool            isGround;
     private ContactFilter2D filter2D;
     private Collider2D[]    contacts = new Collider2D[1];
-    private float           jumpForce = 10; 
+    private float           jumpForce = 10;  
  
     private void Awake()
     {
