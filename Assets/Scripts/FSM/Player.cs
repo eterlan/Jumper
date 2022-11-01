@@ -1,3 +1,4 @@
+using System;
 using Cinemachine;
 using UnityEngine;
 
@@ -36,8 +37,8 @@ namespace FSM
         public FSMManager fsmManager; //= new FSMManager();
         
         // Component
-        public Collider2D groundCheckCollider;
-
+        public BoxCollider2D groundCheckCollider;
+        public Collider2D[] contactsWithGround = new Collider2D[2];
         private void Awake() 
         {
             rb2d         = GetComponent<Rigidbody2D>();
@@ -51,12 +52,32 @@ namespace FSM
             fsmManager       = new FSMManager(this, new FsmState[]{onGround, new Jumping(), new Dash(), new Falling()}, onGround);
         }
 
+        public void IsHorizontalCollision()
+        {
+            var count = Physics2D.GetContacts(groundCheckCollider, groundFilter, contactsWithGround);
+            for (var i = 0; i < count; i++)
+            {
+                var closestPoint = contactsWithGround[i].ClosestPoint(groundCheckCollider.bounds.center);
+                var diff         = (Vector2)groundCheckCollider.bounds.center - closestPoint;
+                var tolerance    = 0.06f;
+                if (Mathf.Abs(diff.x - groundCheckCollider.bounds.extents.x) < tolerance)
+                {
+                    Debug.Log("贴着墙壁");
+                }
+
+                if (Mathf.Abs(diff.y - groundCheckCollider.bounds.extents.y) < tolerance)
+                {
+                    Debug.Log("贴着地板");
+                }
+            }
+        }
         private void Update()
         {
             // isGround = rb2d.IsTouching(groundFilter);
             isGround = Physics2D.IsTouching(groundCheckCollider, groundFilter);
             animator.SetBool(animOnGroundHash, isGround);
-
+            IsHorizontalCollision();
+            
             var jumpPressed = Input.GetButtonDown("Jump");
             if (jumpPressed) fsmManager.SwitchState<Jumping>(repeatEnter: true);
             var dashPressed = Input.GetMouseButtonDown(1);
