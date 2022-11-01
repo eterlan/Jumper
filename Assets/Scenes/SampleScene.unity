@@ -889,18 +889,19 @@ MonoBehaviour:
     m_RotationOrder: 4
   dashMaxSpeed: 20
   dashDuration: 0.2
+  checkWallTolerance: 0.01
   jumpCount: 0
   canDash: 0
   dashCount: 0
   lockFaceDirection: 0
-  xRuntimeSpeed: 5.000015
+  xRuntimeSpeed: 5.000002
   faceDirection: 0
   fsmManager:
     controllerBase: {fileID: 567146677}
   groundCheckCollider: {fileID: 1893271612}
   contactsWithGround:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 47273797}
+  - {fileID: 343324821}
 --- !u!1 &583758759
 GameObject:
   m_ObjectHideFlags: 3
@@ -1035,7 +1036,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.175, y: 1}
+    m_SensorSize: {x: 1.7777778, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
