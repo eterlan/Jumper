@@ -37,7 +37,8 @@ namespace FSM
         public  float         xRuntimeSpeed;
         public  FaceDirection faceDirection;   
         
-        public FSMManager fsmManager; //= new FSMManager();
+        public FSMManager playerFSM; //= new FSMManager();
+        public FSMManager groundStateFSM;
         
         // Component
         public BoxCollider2D groundCheckCollider;
@@ -52,11 +53,14 @@ namespace FSM
             animOnGroundHash = Animator.StringToHash("OnGround");
             animDashHash     = Animator.StringToHash("Dash");
 
+            var idle = new Idle();
+            playerFSM     = new FSMManager(this, new FsmState[]{idle, new Jumping(), new Dash(), new Drop()}, idle);
+            
             var onGround = new OnGround();
-            fsmManager       = new FSMManager(this, new FsmState[]{onGround, new Jumping(), new Dash(), new Falling()}, onGround);
+            groundStateFSM = new FSMManager(this, new FsmState[] {onGround, new Falling()}, onGround);
         }
 
-        public bool IsGround()
+        private bool IsGround()
         {
             var count = Physics2D.GetContacts(groundCheckCollider, groundFilter, contactsWithGround);
             for (var i = 0; i < count; i++)
@@ -83,29 +87,21 @@ namespace FSM
             var isTouchingGroundOrWall = Physics2D.IsTouching(groundCheckCollider, groundFilter);
             isGround = isTouchingGroundOrWall && IsGround();
             animator.SetBool(animOnGroundHash, isGround);
-
-            var jumpPressed = Input.GetButtonDown("Jump");
-            if (jumpPressed) fsmManager.SwitchState<Jumping>(repeatEnter: true);
-            var dashPressed = Input.GetMouseButtonDown(1);
-            if (dashPressed) fsmManager.SwitchState<Dash>(repeatEnter: true);
             
-            fsmManager.Update();
+            var jumpPressed = Input.GetButtonDown("Jump");
+            if (jumpPressed) playerFSM.SwitchState<Jumping>(repeatEnter: true);
+            var dashPressed = Input.GetMouseButtonDown(1);
+            if (dashPressed) playerFSM.SwitchState<Dash>(repeatEnter: true);
+            var dropPressed = Input.GetMouseButtonDown(0);
+            if (dropPressed) playerFSM.SwitchState<Drop>();
+            playerFSM.Update();
+            groundStateFSM.Update();
             
             var horizontalInput = Input.GetAxis("Horizontal");
             if (!lockFaceDirection)
             {
                 Move(horizontalInput);
                 UpdateFaceDirection(horizontalInput);
-            }
-            Drop();
-        }
-
-        private void Drop()
-        {
-            var drop = Input.GetMouseButtonDown(0) && !isGround; 
-            if (drop)
-            {
-                rb2d.velocity = new Vector2(rb2d.velocity.x, -dropForce); 
             }
         }
 
@@ -124,7 +120,21 @@ namespace FSM
             if (Input.GetKeyDown(KeyCode.A)) faceDirection = FaceDirection.Left;
             if (Input.GetKeyDown(KeyCode.D)) faceDirection = FaceDirection.Right;
         }
+        
+        public override void OnGround()
+        {
+            jumpCount = 0;
+            dashCount = 0;
+            playerFSM.SwitchState<Idle>();
+        }
 
+        private void OnEnable()
+        {
+            playerFSM.SwitchState<Idle>();
+            lockFaceDirection = false;
+            
+        }
     }
     // TEST 能同时处于 空中, 能移动, 能冲刺, 能下坠
+    
 }

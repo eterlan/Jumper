@@ -31,6 +31,7 @@ namespace FSM
             player.jumpCount++;
             player.rb2d.velocity = new Vector2(player.rb2d.velocity.x, player.jumpVelocity);
             jumpingElapsedTime   = 0;
+            player.dashCount     = 0;
             player.xRuntimeSpeed = player.jumpForceX; 
         }
 
@@ -63,7 +64,7 @@ namespace FSM
         {
             if (player.rb2d.velocity.y < 0)
             {
-                manager.SwitchState<Falling>(); 
+                manager.SwitchState<Idle>(); 
             }
         }
 

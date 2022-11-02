@@ -1,6 +1,6 @@
 namespace FSM
 {
-    public class Falling : FsmState
+    public class Falling : Everywhere
     {
         public override void Enter()
         {

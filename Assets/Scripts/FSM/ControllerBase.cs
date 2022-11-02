@@ -9,8 +9,13 @@ namespace FSM
         public ContactFilter2D groundFilter;
         public bool            isGround;
         // Animator
-        public Animator animator;  
-        public int      animOnGroundHash;
-        public int      animDashHash;
+        public          Animator animator;  
+        public          int      animOnGroundHash;
+        public          int      animDashHash;
+
+        public virtual void OnGround()
+        {
+            
+        }
     }
 }

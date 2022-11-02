@@ -759,7 +759,7 @@ MonoBehaviour:
     maxDepth: 0
     minNormalAngle: 0
     maxNormalAngle: 0
-  isGround: 1
+  isGround: 0
   animator: {fileID: 1296287667}
   animOnGroundHash: 1602690925
   animDashHash: 995914302
@@ -799,17 +799,19 @@ MonoBehaviour:
   dashMaxSpeed: 20
   dashDuration: 0.2
   checkWallTolerance: 0.01
-  jumpCount: 0
+  jumpCount: 1
   canDash: 0
-  dashCount: 0
+  dashCount: 1
   lockFaceDirection: 0
-  xRuntimeSpeed: 5.000032
+  xRuntimeSpeed: 5.000011
   faceDirection: 0
-  fsmManager:
+  playerFSM:
+    controllerBase: {fileID: 567146677}
+  groundStateFSM:
     controllerBase: {fileID: 567146677}
   groundCheckCollider: {fileID: 1893271612}
   contactsWithGround:
-  - {fileID: 47273797}
+  - {fileID: 2797226418953353176}
   - {fileID: 1138723764}
 --- !u!1 &583758759
 GameObject:
@@ -2033,6 +2035,11 @@ PrefabInstance:
 --- !u!4 &2797226418953353175 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 208108126356164640, guid: 3e46b6c9c4b869440a0a8961696e4c11, type: 3}
+  m_PrefabInstance: {fileID: 2797226418953353174}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &2797226418953353176 stripped
+BoxCollider2D:
+  m_CorrespondingSourceObject: {fileID: 5875064830359593876, guid: 3e46b6c9c4b869440a0a8961696e4c11, type: 3}
   m_PrefabInstance: {fileID: 2797226418953353174}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3769292203288137138

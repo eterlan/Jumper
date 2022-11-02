@@ -1,12 +1,19 @@
 namespace FSM
 {
-    public class OnGround : PlayerFSMState
+    public class OnGround : Everywhere
     {
         public override void Enter()
         {
             base.Enter();
-            player.jumpCount = 0;
-            player.dashCount = 0;
+            controller.OnGround();
+        }
+
+        public override void CheckSwitchCondition()
+        {
+            if (!controller.isGround)
+            {
+                manager.SwitchState<Falling>();
+            }
         }
     }
 }
