@@ -16,7 +16,7 @@ namespace FSM
             base.Enter();
             player.animator.SetTrigger(m_animDashHash);
             player.dashCount++;
-            player.jumpCount     = player.jumpMaxCount - 1;
+            player.jumpCount--; 
             m_dashTimeRemain     = player.dashDuration;
             player.xRuntimeSpeed = player.dashMaxSpeed;
 
