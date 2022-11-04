@@ -54,10 +54,10 @@ namespace FSM
                 if (newState.EnterCondition())
                 {
                     currentState.Exit();
-                    Debug.Log($"退出{currentState.GetType()}");
+                    // Debug.Log($"退出{currentState.GetType()}");
                     currentState = newState;
                     newState.Enter();
-                    Debug.Log($"进入{currentState.GetType()}");
+                    // Debug.Log($"进入{currentState.GetType()}");
                     return newState;
                 }
 

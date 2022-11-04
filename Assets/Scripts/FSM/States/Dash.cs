@@ -43,7 +43,7 @@ namespace FSM
 
         public override bool EnterCondition()
         {
-            return player.dashCount < 1;
+            return player.dashCount < player.dashMaxCount;
         }
 
         public override void CheckSwitchCondition()

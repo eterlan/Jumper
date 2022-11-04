@@ -19,14 +19,22 @@ namespace FSM
         public float jumpForceX         = 20;
 
         public float dropForce = 25;
-        
-        public float          dashLerp = 0.1f;
+
+        public int            dashMaxCount = 2;
+        public float          dashLerp     = 0.1f;
         public AnimationCurve dashCurve;
         public float          dashMaxSpeed = 20;
         public float          dashDuration = 0.2f;
         
         public float checkWallTolerance = 0.01f;
 
+        // 根据速度决定镜头距离
+        public Transform              focusTargetPos;
+        public CinemachineTargetGroup targetGroup;
+        public float                  clampTargetYMin = -20;
+        public float                  clampTargetYMax = -5;
+        public float                  clampMultiplier = 1;
+        public float                  dampSpeed       = 0.2f;
 
         [Header("运行时参数")]
         public int jumpCount;
@@ -43,9 +51,12 @@ namespace FSM
         // Component
         public BoxCollider2D groundCheckCollider;
         public Collider2D[]  contactsWithGround = new Collider2D[2];
+        
+        private float                  dampTargetY;
 
-        private void Awake() 
+        private void Awake()
         {
+            targetGroup  = (Camera.main.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCamera).GetCinemachineComponent<CinemachineFramingTransposer>().FollowTargetGroup;
             rb2d         = GetComponent<Rigidbody2D>();
             animator     = GetComponentInChildren<Animator>();
             groundFilter = new ContactFilter2D {layerMask = LayerMask.GetMask("Ground"), useLayerMask = true, useTriggers = true};
@@ -103,6 +114,8 @@ namespace FSM
                 Move(horizontalInput);
                 UpdateFaceDirection(horizontalInput);
             }
+            
+            UpdateLookDownTarget();
         }
 
         private void Move(float horizontalInput)
@@ -120,7 +133,15 @@ namespace FSM
             if (Input.GetKeyDown(KeyCode.A)) faceDirection = FaceDirection.Left;
             if (Input.GetKeyDown(KeyCode.D)) faceDirection = FaceDirection.Right;
         }
+
+        private void UpdateLookDownTarget()
+        {
+            var targetY = Mathf.Clamp(rb2d.velocity.y * clampMultiplier, clampTargetYMin, clampTargetYMax);
+            dampTargetY = Mathf.Lerp(dampTargetY, targetY, dampSpeed);
+            var targetPos = new Vector3(0, dampTargetY , 0);
+            focusTargetPos.localPosition = targetPos;
         
+        }
         public override void OnGround()
         {
             jumpCount = 0;

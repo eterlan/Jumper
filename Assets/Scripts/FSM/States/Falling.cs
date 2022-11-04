@@ -1,7 +1,10 @@
+using UnityEngine;
+
 namespace FSM
 {
     public class Falling : Everywhere
     {
+        
         public override void Enter()
         {
             base.Enter();
@@ -13,6 +16,12 @@ namespace FSM
             {
                 manager.SwitchState<OnGround>();
             }
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
         }
     }
 }
