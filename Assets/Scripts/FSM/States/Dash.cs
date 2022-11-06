@@ -15,8 +15,8 @@ namespace FSM
         {
             base.Enter();
             player.animator.SetTrigger(m_animDashHash);
-            player.dashCount++;
-            player.jumpCount--; 
+            player.remainDashCount--;
+            player.remainJumpCount++; 
             m_dashTimeRemain     = player.dashDuration;
             player.xRuntimeSpeed = player.dashMaxSpeed;
 
@@ -43,7 +43,7 @@ namespace FSM
 
         public override bool EnterCondition()
         {
-            return player.dashCount < player.dashMaxCount;
+            return player.remainDashCount > 0 ;
         }
 
         public override void CheckSwitchCondition()

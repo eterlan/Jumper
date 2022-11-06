@@ -2,26 +2,14 @@ using UnityEngine;
 
 namespace FSM
 {
-    public class Falling : Everywhere
+    public class Falling : PlayerFSMState
     {
-        
-        public override void Enter()
-        {
-            base.Enter();
-        }
-
         public override void CheckSwitchCondition()
         {
             if (controller.isGround)
             {
-                manager.SwitchState<OnGround>();
+                manager.SwitchState<Idle>();
             }
-        }
-
-        public override void Update()
-        {
-            base.Update();
-
         }
     }
 }

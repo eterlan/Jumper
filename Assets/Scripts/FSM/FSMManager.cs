@@ -9,6 +9,7 @@ namespace FSM
         public ControllerBase controllerBase;
         public FsmState[]     states;
         public FsmState       currentState;
+        public FsmState       prevState;
         public FSMManager(ControllerBase controller, FsmState[] states, FsmState defaultState)
         {
             controllerBase = controller;
@@ -17,12 +18,21 @@ namespace FSM
             {
                 state.Init(this, controller);
             }
-            currentState   = defaultState;
+            currentState = defaultState;
+            prevState    = currentState;
             currentState.Enter();
         }
 
         public void Update()
         {
+            if (prevState != currentState)
+            {
+                prevState.Exit();
+                Debug.Log($"退出{prevState.GetType()}");
+                prevState = currentState;
+                currentState.Enter();
+                Debug.Log($"进入{currentState.GetType()}");
+            }
             currentState.Update();
         }
         
@@ -53,12 +63,9 @@ namespace FSM
             {
                 if (newState.EnterCondition())
                 {
-                    currentState.Exit();
-                    // Debug.Log($"退出{currentState.GetType()}");
+                    prevState    = currentState;
                     currentState = newState;
-                    newState.Enter();
-                    // Debug.Log($"进入{currentState.GetType()}");
-                    return newState;
+                    return currentState;
                 }
 
                 Debug.Log($"{controllerBase}不满足进入{typeof(T)}的条件");

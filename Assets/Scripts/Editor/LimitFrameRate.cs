@@ -8,6 +8,7 @@ namespace Editor
         [InitializeOnEnterPlayMode]
         public static void SetFrameRate()
         {
+            Debug.Log("VAR");
             Application.targetFrameRate = 60;
         }
     }

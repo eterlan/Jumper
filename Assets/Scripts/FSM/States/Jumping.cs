@@ -20,7 +20,7 @@ namespace FSM
         }
         public override bool EnterCondition()
         {
-            return player.jumpCount < player.jumpMaxCount;
+            return player.remainJumpCount > 0;
         }
 
         public override void Enter()
@@ -28,7 +28,8 @@ namespace FSM
             // 进入跳跃状态
             base.Enter();
             player.animator.SetTrigger(m_animJumpHash);
-            player.jumpCount++;
+            player.remainJumpCount--;
+            Debug.Log("jump"); 
             player.rb2d.velocity = new Vector2(player.rb2d.velocity.x, player.jumpVelocity);
             jumpingElapsedTime   = 0;
             player.xRuntimeSpeed = player.jumpForceX; 
@@ -63,7 +64,7 @@ namespace FSM
         {
             if (player.rb2d.velocity.y < 0)
             {
-                manager.SwitchState<Idle>(); 
+                manager.SwitchState<Falling>(); 
             }
         }
 

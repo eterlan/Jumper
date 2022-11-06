@@ -26,7 +26,7 @@ namespace FSM
             if (collideWithEnemy)
             {
                 // freeze 击杀敌人的反馈
-                player.jumpCount = player.jumpMaxCount - 1;
+                player.remainJumpCount = player.jumpMaxCount ++;
             }
         }
     }
