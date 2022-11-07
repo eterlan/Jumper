@@ -38,8 +38,14 @@ namespace FSM
         public float                  clampTargetYMax = -5;
         public float                  clampMultiplier = 1;
         public float                  dampSpeed       = 0.2f;
+        
+        // 坠落伤害
+        public float dmgMinVelocity = -40;
+        public float dmgMaxVelocity = -100;
+        public float playerMaxHp    = 100;
 
         [Header("运行时参数")]
+        public FloatVariable HP;
         public int remainJumpCount;
         public  bool          canDash;
         public  int          remainDashCount;
@@ -66,8 +72,17 @@ namespace FSM
             animOnGroundHash = Animator.StringToHash("OnGround");
             animDashHash     = Animator.StringToHash("Dash");
 
-            var idle = new Idle();
-            playerFSM     = new FSMManager(this, new FsmState[]{idle, new Jumping(), new Dash(), new Drop(), new Falling()}, idle);
+            var idle = new OnGround();
+            playerFSM         =  new FSMManager(this, new FsmState[]{idle, new Falling(), new Jumping(), new Dash(), new Drop(), new Death()}, idle);
+            HP.Value          =  playerMaxHp;
+            HP.OnValueChanged += (old, @new) =>
+            {
+                Debug.Log($"old: {old}, new: {@new}");
+                if (@new < 0)
+                {
+                    playerFSM.SwitchState<Death>();
+                }
+            }; 
 
             focusTargetPos.localPosition = new Vector3(0, clampTargetYMax, 0);
             dampTargetY                  = clampTargetYMax;
@@ -75,12 +90,15 @@ namespace FSM
 
         private bool IsGround()
         {
+            contactsWithGround.Initialize();
             var count = Physics2D.GetContacts(groundCheckCollider, groundFilter, contactsWithGround);
             for (var i = 0; i < count; i++)
             {
-                var closestPoint = contactsWithGround[i].ClosestPoint(groundCheckCollider.bounds.center);
-                var diff         = (Vector2)groundCheckCollider.bounds.center - closestPoint;
-                if (Mathf.Abs(diff.y - groundCheckCollider.bounds.extents.y) < checkWallTolerance)
+                var bounds       = groundCheckCollider.bounds;
+                var closestPoint = contactsWithGround[i].ClosestPoint(bounds.center);
+                var diff         = (Vector2)bounds.center - closestPoint;
+                var tolerance    = bounds.extents.y;
+                if (Mathf.Abs(diff.y - tolerance) <= tolerance)
                 {
                     return true;
                     // Debug.Log("贴着地板"); 
@@ -157,7 +175,7 @@ namespace FSM
 
         private void OnEnable()
         {
-            playerFSM.SwitchState<Idle>();
+            playerFSM.SwitchState<OnGround>();
             lockFaceDirection = false;
         }
 
@@ -176,15 +194,7 @@ namespace FSM
         //     hpUIHighLight.fillAmount = Mathf.Lerp(hpUIHighLight.fillAmount, normalizedHpTarget, hpHighlightUILerpSpeed);
         // }
 
-        [Button]
-        public float CalculateFallingDamage(float fallingSpeed)
-        {
-            var dmgMinVelocity = -30;
-            var dmgMaxVelocity = -60;
-            var playerMaxHp    = 100;
-            var dmg            = MathHelper.Remap(fallingSpeed, dmgMinVelocity, dmgMaxVelocity, 0, 100);
-            return dmg;
-        }
+
     }
     // TEST 能同时处于 空中, 能移动, 能冲刺, 能下坠
     

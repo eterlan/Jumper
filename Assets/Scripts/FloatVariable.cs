@@ -20,6 +20,7 @@ public class FloatVariable : ScriptableObject
             if (!Mathf.Approximately(value, this.value))
             {
                 OnValueChanged?.Invoke(this.value, value);
+                this.value = value; 
             }
         }
     }

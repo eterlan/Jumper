@@ -29,7 +29,6 @@ namespace FSM
             base.Enter();
             player.animator.SetTrigger(m_animJumpHash);
             player.remainJumpCount--;
-            Debug.Log("jump"); 
             player.rb2d.velocity = new Vector2(player.rb2d.velocity.x, player.jumpVelocity);
             jumpingElapsedTime   = 0;
             player.xRuntimeSpeed = player.jumpForceX; 

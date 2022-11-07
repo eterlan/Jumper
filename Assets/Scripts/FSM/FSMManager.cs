@@ -27,10 +27,10 @@ namespace FSM
         {
             if (prevState != currentState)
             {
-                prevState.Exit();
-                Debug.Log($"退出{prevState.GetType()}");
-                prevState = currentState;
+                prevState.Exit(); 
+                Debug.Log($"退出{prevState.GetType() }");
                 currentState.Enter();
+                prevState = currentState;
                 Debug.Log($"进入{currentState.GetType()}");
             }
             currentState.Update();
@@ -45,7 +45,7 @@ namespace FSM
             for (var i = 0; i < states.Length; i++)
                 if (states[i] is T)
                 {
-                    state = states[i];
+                    state = states[i];  
                     return true;
                 }
             state = null;

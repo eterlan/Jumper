@@ -31,7 +31,7 @@ namespace FSM
 
         public override void Update()
         {
-            base.Update();
+            base.Update(); 
             m_dashTimeRemain -= Time.deltaTime;
             
             var normalizedTime = 1 - m_dashTimeRemain / player.dashDuration;
@@ -48,7 +48,17 @@ namespace FSM
 
         public override void CheckSwitchCondition()
         {
-            if (m_dashTimeRemain < 0) manager.SwitchState<Idle>();
+            if (m_dashTimeRemain < 0)
+            {
+                if (player.isGround)
+                {
+                    manager.SwitchState<OnGround>();
+                }
+                else
+                {
+                    manager.SwitchState<Falling>();
+                }
+            }
         }
     }
 }

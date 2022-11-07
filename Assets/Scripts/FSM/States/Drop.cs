@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace FSM
 {
-    public class Drop : PlayerFSMState
+    public class Drop : Falling
     {
         private ContactFilter2D m_enemyFilter;
         public Drop()
@@ -22,6 +22,7 @@ namespace FSM
 
         public override void CheckSwitchCondition()
         {
+            base.CheckSwitchCondition();
             var collideWithEnemy = Physics2D.IsTouching(player.groundCheckCollider, m_enemyFilter);
             if (collideWithEnemy)
             {
