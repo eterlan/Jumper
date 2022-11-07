@@ -1,6 +1,9 @@
 using System;
 using Cinemachine;
+using Sirenix.OdinInspector;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace FSM
 {
@@ -156,6 +159,31 @@ namespace FSM
         {
             playerFSM.SwitchState<Idle>();
             lockFaceDirection = false;
+        }
+
+        // TODO HP UI
+        // private void UpdateHp()
+        // {
+        //     var allHp                   = 100;
+        //     var currentHp               = 60;
+        //     var targetHp                = 40;
+        //     var hpHighlightUILerpSpeed = 0.1f;
+        //     var hpCurrentUILerpSpeed = 0.2f;
+        //     var normalizedHpTarget      = targetHp / allHp;
+        //     var hpUIHighLight           = new Image();
+        //     var hpUICurrent             = new Image();
+        //     hpUICurrent.fillAmount   = Mathf.Lerp(hpUICurrent.fillAmount, normalizedHpTarget, hpCurrentUILerpSpeed);
+        //     hpUIHighLight.fillAmount = Mathf.Lerp(hpUIHighLight.fillAmount, normalizedHpTarget, hpHighlightUILerpSpeed);
+        // }
+
+        [Button]
+        public float CalculateFallingDamage(float fallingSpeed)
+        {
+            var dmgMinVelocity = -30;
+            var dmgMaxVelocity = -60;
+            var playerMaxHp    = 100;
+            var dmg            = MathHelper.Remap(fallingSpeed, dmgMinVelocity, dmgMaxVelocity, 0, 100);
+            return dmg;
         }
     }
     // TEST 能同时处于 空中, 能移动, 能冲刺, 能下坠
