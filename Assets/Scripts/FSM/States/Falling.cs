@@ -7,12 +7,14 @@ namespace FSM
         private float m_velocityLastFrame;
         public override void CheckSwitchCondition()
         {
+            Debug.Log(player.rb2d.velocity.y);
             if (controller.isGround)
             {
+                Debug.Log("Ground");
                 var fallingDmg = CalculateFallingDamage(m_velocityLastFrame);
                 if (fallingDmg > 0)
                 {
-                    player.HP.Value -= fallingDmg;
+                    player.HP.Value -= fallingDmg;  
                 }
 
                 if (!player.playerFSM.IsState<Death>())

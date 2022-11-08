@@ -1,5 +1,6 @@
 using System;
 using Cinemachine;
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using Unity.Mathematics;
 using UnityEngine;
@@ -43,6 +44,12 @@ namespace FSM
         public float dmgMinVelocity = -40;
         public float dmgMaxVelocity = -100;
         public float playerMaxHp    = 100;
+        
+        // 伤害UI
+        public float hpHighlightUITransitionDuration = 0.1f;
+        public float hpCurrentUITransitionDuration = 0.2f;
+        public  Image hpUIHighLight;
+        public  Image hpUICurrent;   
 
         [Header("运行时参数")]
         public FloatVariable HP;
@@ -59,8 +66,10 @@ namespace FSM
         // Component
         public BoxCollider2D groundCheckCollider;
         public Collider2D[]  contactsWithGround = new Collider2D[2];
+
         
-        private float                  dampTargetY;
+        private float dampTargetY;
+
 
         private void Awake()
         {
@@ -78,6 +87,7 @@ namespace FSM
             HP.OnValueChanged += (old, @new) =>
             {
                 Debug.Log($"old: {old}, new: {@new}");
+                UpdateHp(old, @new);
                 if (@new < 0)
                 {
                     playerFSM.SwitchState<Death>();
@@ -160,7 +170,7 @@ namespace FSM
         }
 
         private void UpdateLookDownTarget()
-        {
+        {  
             var targetY = Mathf.Clamp(rb2d.velocity.y * clampMultiplier, clampTargetYMin, clampTargetYMax);
             dampTargetY = Mathf.Lerp(dampTargetY, targetY, dampSpeed);
             var targetPos = new Vector3(0, dampTargetY , 0);
@@ -180,19 +190,12 @@ namespace FSM
         }
 
         // TODO HP UI
-        // private void UpdateHp()
-        // {
-        //     var allHp                   = 100;
-        //     var currentHp               = 60;
-        //     var targetHp                = 40;
-        //     var hpHighlightUILerpSpeed = 0.1f;
-        //     var hpCurrentUILerpSpeed = 0.2f;
-        //     var normalizedHpTarget      = targetHp / allHp;
-        //     var hpUIHighLight           = new Image();
-        //     var hpUICurrent             = new Image();
-        //     hpUICurrent.fillAmount   = Mathf.Lerp(hpUICurrent.fillAmount, normalizedHpTarget, hpCurrentUILerpSpeed);
-        //     hpUIHighLight.fillAmount = Mathf.Lerp(hpUIHighLight.fillAmount, normalizedHpTarget, hpHighlightUILerpSpeed);
-        // }
+        private void UpdateHp(float oldHp, float newHp)
+        {
+            var normalizedHpTarget     = newHp / playerMaxHp;
+            hpUICurrent.DOFillAmount(normalizedHpTarget, hpCurrentUITransitionDuration);
+            hpUIHighLight.DOFillAmount(normalizedHpTarget, hpHighlightUITransitionDuration);
+        }
 
 
     }
