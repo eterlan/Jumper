@@ -4,7 +4,9 @@ using DG.Tweening;
 using Sirenix.OdinInspector;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Variable;
 
 namespace FSM
 {
@@ -46,10 +48,14 @@ namespace FSM
         public float playerMaxHp    = 100;
         
         // 伤害UI
-        public float hpHighlightUITransitionDuration = 0.1f;
-        public float hpCurrentUITransitionDuration = 0.2f;
-        public  Image hpUIHighLight;
-        public  Image hpUICurrent;   
+        [FormerlySerializedAs("hpHighlightUITransitionDuration")]
+        public float hpSlowTransitionDuration = 0.1f;
+        [FormerlySerializedAs("hpCurrentUITransitionDuration")]
+        public float hpFastTransitionDuration   = 0.2f;
+        [FormerlySerializedAs("hpUIHighLight")]
+        public Image hpUIReduceHighlight;
+        public Image hpUICurrent;
+        public Image hpUIAddHighlight;
 
         [Header("运行时参数")]
         public FloatVariable HP;
@@ -190,11 +196,23 @@ namespace FSM
         }
 
         // TODO HP UI
+        [Button]
         private void UpdateHp(float oldHp, float newHp)
         {
             var normalizedHpTarget     = newHp / playerMaxHp;
-            hpUICurrent.DOFillAmount(normalizedHpTarget, hpCurrentUITransitionDuration);
-            hpUIHighLight.DOFillAmount(normalizedHpTarget, hpHighlightUITransitionDuration);
+            if (newHp < oldHp)
+            {
+                hpUICurrent.DOFillAmount(normalizedHpTarget, hpFastTransitionDuration);
+                hpUIReduceHighlight.DOFillAmount(normalizedHpTarget, hpSlowTransitionDuration);
+                hpUIAddHighlight.DOFillAmount(normalizedHpTarget, hpFastTransitionDuration);
+            }
+            else
+            {
+                hpUICurrent.DOFillAmount(normalizedHpTarget, hpSlowTransitionDuration);
+                hpUIAddHighlight.DOFillAmount(normalizedHpTarget, hpFastTransitionDuration);
+                hpUIReduceHighlight.DOFillAmount(normalizedHpTarget, hpFastTransitionDuration);
+            }
+            
         }
 
 
