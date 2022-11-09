@@ -2,6 +2,7 @@ using System;
 using Cinemachine;
 using DG.Tweening;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -106,19 +107,31 @@ namespace FSM
 
         private bool IsGround()
         {
-            contactsWithGround.Initialize();
+            Array.Clear(contactsWithGround, 0, contactsWithGround.Length);
             var count = Physics2D.GetContacts(groundCheckCollider, groundFilter, contactsWithGround);
             for (var i = 0; i < count; i++)
             {
                 var bounds       = groundCheckCollider.bounds;
-                var closestPoint = contactsWithGround[i].ClosestPoint(bounds.center);
-                var diff         = (Vector2)bounds.center - closestPoint;
-                var tolerance    = bounds.extents.y;
-                if (Mathf.Abs(diff.y - tolerance) <= tolerance)
+                var contact  = contactsWithGround[i];
+                var closestPoint = contact.ClosestPoint(bounds.center);
+                // var diff         = (Vector2)bounds.center - closestPoint;
+                // var tolerance    = bounds.extents.y;
+                // if (Mathf.Abs(diff.y - tolerance) <= tolerance)
+                // {
+                //     return true;
+                //     // Debug.Log("贴着地板"); 
+                // }
+                // TEST 如果接触点到接触物中心点的y轴距离约等于接触物的y长度/2 说明是地面
+                var contactBound = contact.bounds;
+                var diff         = (Vector2)contactBound.center - closestPoint;
+                var isWall       = Mathf.Approximately(Mathf.Abs(diff.x), contactBound.extents.x);
+                var isGrounded     = Mathf.Approximately(Mathf.Abs(diff.y), contactBound.extents.y);
+                if (isGrounded)
                 {
                     return true;
-                    // Debug.Log("贴着地板"); 
                 }
+
+
                 // if (Mathf.Abs(diff.x - groundCheckCollider.bounds.extents.x) < checkWallTolerance)
                 // {
                 //     return true;
