@@ -20,7 +20,7 @@ namespace FSM
         public float xSpeedLerpSpeed = 0.1f; 
         
         public int   jumpMaxCount       = 2;
-        public float jumpCancelVelocity = 5;
+        public float jumpCancelVelocity = 5; 
         public float jumpVelocity       = 17;
         public float minJumpDuration    = 0.1f;
         public float jumpForceX         = 20;
@@ -125,7 +125,7 @@ namespace FSM
                 var contactBound = contact.bounds;
                 var diff         = (Vector2)contactBound.center - closestPoint;
                 var isWall       = Mathf.Approximately(Mathf.Abs(diff.x), contactBound.extents.x);
-                var isGrounded     = Mathf.Approximately(Mathf.Abs(diff.y), contactBound.extents.y);
+                var isGrounded     = Mathf.Abs(Mathf.Abs(diff.y) - contactBound.extents.y) < 0.02f;
                 if (isGrounded)
                 {
                     return true;

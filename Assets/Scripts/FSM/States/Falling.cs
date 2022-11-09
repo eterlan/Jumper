@@ -4,14 +4,14 @@ namespace FSM
 {
     public class Falling : PlayerFSMState
     {
-        private float m_velocityLastFrame;
+        private float m_velocityBeforeGrounded;
         public override void CheckSwitchCondition()
         {
             Debug.Log(player.rb2d.velocity.y);
             if (controller.isGround)
             {
                 Debug.Log("Ground");
-                var fallingDmg = CalculateFallingDamage(m_velocityLastFrame);
+                var fallingDmg = CalculateFallingDamage(m_velocityBeforeGrounded);
                 if (fallingDmg > 0)
                 {
                     player.HP.Value -= fallingDmg;  
@@ -22,8 +22,13 @@ namespace FSM
                     manager.SwitchState<OnGround>();
                 }
             }
-            
-            m_velocityLastFrame = player.rb2d.velocity.y;
+
+            // 
+            var yVelocity = player.rb2d.velocity.y;
+            if (yVelocity < m_velocityBeforeGrounded)
+            {
+                m_velocityBeforeGrounded = yVelocity;
+            }
         }
         
         private float CalculateFallingDamage(float fallingSpeed)
