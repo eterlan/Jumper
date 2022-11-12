@@ -11,22 +11,4 @@ namespace GamePlay
              
         }
     }
-
-    public abstract class Effect
-    {
-        public async void Trigger()
-        {
-            await UniTask.Delay(TimeSpan.FromSeconds())
-        }
-    }
-
-    public class RepeatEffect
-    {
-        
-    }
-    
-    public class TimerSystem : MonoBehaviour
-    {
-        
-    }
 }
