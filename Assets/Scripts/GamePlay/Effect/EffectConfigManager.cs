@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DG.Tweening.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace GamePlay
 {
@@ -15,15 +16,15 @@ namespace GamePlay
         [SerializeField]
         private Dictionary<string, EffectConfig> effectConfigs;
 
-        public EffectConfig GetEffectConfig(string effectName)
+        public bool GetEffectConfig(string effectName, out EffectConfig config)
         {
-            if (effectConfigs.TryGetValue(effectName, out var effect))
+            if (effectConfigs.TryGetValue(effectName, out config))
             {
-                return effect;
+                return true;
             }
     
             Debug.Log($"效果配置集合中不存在{effectName}配置, 请检查名字");
-            return null;
+            return false;
         }
         
         
@@ -33,18 +34,6 @@ namespace GamePlay
         }
     }
 
-    public enum EffectType
-    {
-        /// <summary>
-        /// 生命值
-        /// </summary>
-        Hp,
-        /// <summary>
-        /// 耐力
-        /// </summary>
-        Sta
-    }
-    
     /// <summary>
     /// 效果配置文件
     /// </summary>
@@ -53,7 +42,8 @@ namespace GamePlay
     {
         public float      duration;
         public float      triggerInterval;
-        public EffectType effectType;
+        [FormerlySerializedAs("effectType")]
+        public StatType StatType;
         public float      changeValue;
 
         public void ApplyEffect(ref float value)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Variable;
 
 namespace GamePlay
 {
@@ -24,6 +25,11 @@ namespace GamePlay
         {
             
         }
+
+        
+        
+
+        
         
         [Button]
         public async void Test ()

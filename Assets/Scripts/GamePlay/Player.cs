@@ -1,15 +1,14 @@
 using System;
 using Cinemachine;
 using DG.Tweening;
+using FSM;
 using Sirenix.OdinInspector;
-using Sirenix.Utilities;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Variable;
 
-namespace FSM
+namespace GamePlay
 {
     [SaveDuringPlay]
     public class Player : ControllerBase

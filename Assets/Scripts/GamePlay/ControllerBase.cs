@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace FSM
+namespace GamePlay
 {
     public abstract class ControllerBase : MonoBehaviour
     {

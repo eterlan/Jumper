@@ -676,6 +676,62 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &352099223
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 352099224}
+  - component: {fileID: 352099225}
+  m_Layer: 0
+  m_Name: EffectCarrier
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &352099224
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352099223}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 567146674}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &352099225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352099223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b964a4a3e234f208a49af906ed1cfd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effects:
+  - rid: 7891554887805173768
+  references:
+    version: 2
+    RefIds:
+    - rid: 7891554887805173768
+      type: {class: EffectStackableRuntimeBase, ns: GamePlay, asm: Assembly-CSharp}
+      data:
+        name: 
+        duration: 3
+        lifeTime: 3
+        triggerInterval: 1
 --- !u!1 &381422949
 GameObject:
   m_ObjectHideFlags: 0
@@ -1175,6 +1231,7 @@ Transform:
   - {fileID: 1296287666}
   - {fileID: 1893271611}
   - {fileID: 414075309}
+  - {fileID: 352099224}
   m_Father: {fileID: 1640080493}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1319,7 +1376,7 @@ MonoBehaviour:
   groundCheckCollider: {fileID: 1893271612}
   contactsWithGround:
   - {fileID: 47273797}
-  - {fileID: 0}
+  - {fileID: 1138723764}
 --- !u!1 &583758759
 GameObject:
   m_ObjectHideFlags: 3
@@ -2164,12 +2221,12 @@ GameObject:
   - component: {fileID: 942228650}
   - component: {fileID: 942228651}
   m_Layer: 5
-  m_Name: TEST
+  m_Name: UI Sequence Animation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &942228639
 RectTransform:
   m_ObjectHideFlags: 0
