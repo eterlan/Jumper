@@ -16,15 +16,4 @@ namespace GamePlay
             
         }
     }
-
-    // TEST 被添加的一瞬间就开始执行 
-    
-
-    public class DelayAdd : EffectRuntimeBase
-    {
-        public override void Execute()
-        {
-            base.Execute();
-        }
-    }
 }
