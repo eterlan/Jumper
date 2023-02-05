@@ -16,8 +16,8 @@ namespace ECS
             }
 
             componentData = default;
-            if (!componentMap.TryGetComponentData(entity, out var )) return false;
-            componentData = (T);
+            if (!componentMap.TryGetComponentData(entity, out var s)) return false;
+            componentData = (T)s;
             return true;
         }
     }
