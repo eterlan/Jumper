@@ -15,6 +15,10 @@ public class Tester : MonoBehaviour
         d.a = 12;
         Debug.Log(c.a);
     }
+
+    private void Update()
+    {
+    }
 }
 
 public class A
