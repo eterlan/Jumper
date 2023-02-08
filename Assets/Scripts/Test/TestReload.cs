@@ -14,16 +14,16 @@ public class TestReload : MonoBehaviour
         //Debug.Log("bbbss");
         //Debug.Log(testReload3.a);
         Test();
-        // testReload3.A(); 
-        //Debug.Log(321);
-        // Debug.Log(testReload3.d);
+        testReload3.A(); 
+        Debug.Log(testReload3.d);
+        Debug.Log(TestReload2.a);
         // Debug.Log(a);
-        
+
     }
 
     private void Test()
     {
-        Debug.Log("ss");
+        Debug.Log("sssss");
         
     }
 }

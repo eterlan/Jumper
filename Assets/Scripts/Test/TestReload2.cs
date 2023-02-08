@@ -7,7 +7,7 @@ public class TestReload2 : MonoBehaviour
     private void Update()
     {
         // Debug.Log("asd");
-        a = "999";
+        a = "999dss";
     }
 }
 
@@ -20,6 +20,6 @@ public class TestReload3
     public string d = "sada" , e = "qw";  
     public void A()
     {
-        Debug.Log("000");
+        Debug.Log("00s0");
     }
 }
