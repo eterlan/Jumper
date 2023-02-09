@@ -1,43 +1,48 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace ECS
 {
     public class TestECS : MonoBehaviour
     {
+        public int count;
         [Button]
         public void Test()
         {
-            var entity1 = 100;
-            var entity2 = 200;
-
-            Ecs.instance.TryAddComponent(entity1, new AComponent { a = "AB" });
-            Ecs.instance.TryAddComponent(entity1, new BComponent { a = "B" });
-            Ecs.instance.TryAddComponent(entity2, new AComponent { a = "C" });
-
-            Ecs.instance.Foreach((AComponent a) =>
+            var a   = Stopwatch.StartNew();
+            var       ecs = Ecs.instance;
+            for (var i = 0; i < count; i++)
             {
-                Debug.Log("----- 1 -----");
-                Debug.Log(a.a);
-            });
+                var id = i;
+                ecs.TryAddComponent(id, new AComponent { a = i });
+                var createB = Random.Range(0, 10) < 2;
+                if (createB)
+                {
+                    ecs.TryAddComponent(id, new BComponent { a = i * 0.1f });
+                }
+            }
 
-            Ecs.instance.Foreach((AComponent a, BComponent b) =>
+            Debug.Log($"{a.Elapsed.Milliseconds}ms");
+            Ecs.instance.Foreach<AComponent, BComponent>((a, b) =>
             {
                 Debug.Log("----- 2 -----");
                 Debug.Log(a.a);
+                Debug.Log(b.a);
             });
         }
         
 
         public struct AComponent : IComponentData
         {
-            public string a;
+            public int a;
         }
 
         public struct BComponent : IComponentData
         {
-            public string a;
+            public float a;
         }
     }
 }
