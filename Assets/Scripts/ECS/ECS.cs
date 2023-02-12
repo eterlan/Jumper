@@ -51,9 +51,8 @@ namespace ECS
             ((ComponentMap<T>)componentMap).GetComponents().ForEach(c => action((T)c));
         }
 
-        public void Foreach<T1, T2>(out int entity, Action<T1, T2> action) where T1 : IComponentData where T2 : IComponentData
+        public void Foreach<T1, T2>(Action<T1, T2> action) where T1 : IComponentData where T2 : IComponentData
         {
-            e
             if (!HasComponentMap<T1>() || !HasComponentMap<T2>())
                 return;
 
